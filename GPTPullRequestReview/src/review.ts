@@ -4,7 +4,7 @@ import { addCommentToPR } from "./pr.js";
 import * as tl from "azure-pipelines-task-lib/task.js";
 
 const defaultOpenAIModel = "gpt-3.5-turbo";
-
+const defaultMaxTokens = 10000;
 const defaultInstructions = `
 Act as an experienced code reviewer for a team using .NET, Node.js, TypeScript, JavaScript, Java, and Python. The team follows SOLID principles and Domain-Driven Design (DDD) practices. You will be provided with Pull Request changes in a patch format. Each patch entry includes the commit message in the Subject line followed by the code changes (diffs) in a unidiff format.
 
@@ -47,6 +47,7 @@ export async function reviewFile(
     const patch = await git.diff([targetBranch, "--", fileName]);
     const model = tl.getInput("model") || defaultOpenAIModel;
     const instructions = tl.getInput("instructions") || defaultInstructions;
+    const tokens = parseInt(tl.getInput("max_tokens") || "") || defaultMaxTokens;
 
     const response = await openai.chat.completions.create({
       model,
@@ -54,7 +55,7 @@ export async function reviewFile(
         { role: "system", content: instructions },
         { role: "user", content: patch },
       ],
-      max_tokens: 2000,
+      max_tokens: tokens,
     });
 
     const review = response.choices[0]?.message?.content?.trim() || "";
