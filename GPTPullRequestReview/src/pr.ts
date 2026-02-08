@@ -22,7 +22,7 @@ const getDevOpsUrl = ({
   }
 
   tl.debug(`DevOps URL constructed: ${prUrl}`);
-  return `${prUrl}?api-version=7.1`;
+  return `${prUrl}?api-version=5.0`;
 };
 
 const fetchWithErrorHandling = async (
@@ -51,7 +51,7 @@ export async function addCommentToPR(
     ],
     status: 1,
     threadContext: {
-      filePath: fileName,
+      filePath: '/' + fileName,
     },
   };
 
@@ -88,7 +88,9 @@ export async function deleteExistingComments(): Promise<void> {
   const collectionName = getCollectionName(
     tl.getVariable("SYSTEM.TEAMFOUNDATIONCOLLECTIONURI") || "",
   );
-  const buildServiceName = `${tl.getVariable("SYSTEM.TEAMPROJECT")} Build Service (${collectionName})`;
+  const autoDeterminedBuildServiceName = `${tl.getVariable("SYSTEM.TEAMPROJECT")} Build Service (${collectionName})`;
+  const buildServiceName = tl.getInput("buildservicename") || autoDeterminedBuildServiceName;
+  tl.debug(`Checking for comments with displayName: ${buildServiceName}`);
 
   for (const thread of threadsWithContext) {
     const commentsUrl = getDevOpsUrl({ threadId: thread.id });
