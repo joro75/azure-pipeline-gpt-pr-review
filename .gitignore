@@ -111,3 +111,6 @@ dist
 
 *.js
 .idea
+
+# Visual studio
+.vs/
