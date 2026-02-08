@@ -70,7 +70,15 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "The instructions that are provided to the AI with directions on how to perform the review. (optional)."
-    },    
+    },
+    {
+      "name": "max_tokens",
+      "type": "int",
+      "label": "Maximum tokens",
+      "defaultValue": "10000",
+      "required": false,
+      "helpMarkDown": "The maximum number output tokens that can be used by the LLM to generate a response. (optional)."
+    },
     {
       "name": "buildservicename",
       "type": "string",
