@@ -20,6 +20,9 @@ A task for Azure DevOps build pipelines to add GPT as a Pull Request reviewer.
     - [Add the task to the build pipeline](#add-the-task-to-the-build-pipeline)
     - [Configure the task](#configure-the-task)
     - [Review Pull Requests](#review-pull-requests)
+  - [How to modify the extension](#how-to-modify-the-extension)
+    - [Build the extension](#build-the-extension)
+    - [Install the modified extension](#install-the-modified-extension)
   - [License](#license)
 
 ---
@@ -148,6 +151,37 @@ Once you have added the task to your pipeline, configure it.
 ### Review Pull Requests
 
 When the build is triggered from a Pull Request, the task will review it. If there is feedback on the changed code, the task will add comments to the Pull Request. If the build is triggered manually, the task will be skipped.
+
+## How to modify the extension
+
+### Build the extension
+
+To build the GPT Pull Request Review task yourself, the following steps can be used:
+
+1. Install node.js (preferably an LTS version)
+1. Install the Azure DevOps extension tool (tfx-cli): `npm install -g tfx-cli`
+1. Start the 'Node.JS command prompt'
+1. Change to the source code directory
+1. Install missing packages: `npm install`
+1. Update the version, as the package number should be different for Azure DevOps:
+   - Update the task Patch version in `GPTPullRequestReview/task.json`
+   - Update the extension version in `vss-extension.json`
+1. Build the package: `npm --prefix ./GPTPullRequestReview run build`
+1. Package the Azure DevOps extension (.vsix):
+   `tfx extension create --manifest-globs vss-extension.json --env mode=production`
+
+
+### Install the modified extension
+
+To use your own custom build of the GPT Pull Request Review Task, first install the extension in your Azure DevOps organization.
+It is best to first install the standard extension as it is described above.
+The customised extension can then be installed as an update of that extension.
+
+1. Login on the Azure DevOps server with sufficient rights to manage the extensions.
+1. On the top right, go to 'Manage extensions'.
+1. Click on 'Browse local extensions', and then select on the bottom 'manage extensions'
+1. Click on the '...' of the already installed extension and select 'update' and select the locally compiled customised version.
+1. Click on 'Upload'.
 
 ## License
 
